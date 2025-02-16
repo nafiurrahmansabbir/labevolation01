@@ -11,7 +11,8 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
-  TextEditingController _controller = TextEditingController();
+  String? _selectedOperator;
+  final List<String> _operators = ['+', '-', '*', '/'];
 
   @override
   Widget build(BuildContext context) {
@@ -24,24 +25,36 @@ class _SecondPageState extends State<SecondPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 30,
-            ),
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(labelText: "Enter Operator",hintText: '(+, -, *, /)'),
+            SizedBox(height: 30),
+            DropdownButtonFormField<String>(
+              value: _selectedOperator,
+              hint: Text("Select Operator"),
+              onChanged: (value) {
+                setState(() {
+                  _selectedOperator = value;
+                });
+              },
+              items: _operators.map((operator) {
+                return DropdownMenuItem(
+                  value: operator,
+                  child: Text(operator),
+                );
+              }).toList(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Operator",
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                String operator = _controller.text;
-                if (operator.isNotEmpty) {
+                if (_selectedOperator != null) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ThirdPage(
                         firstOperand: widget.firstOperand,
-                        operator: operator,
+                        operator: _selectedOperator!,
                       ),
                     ),
                   );
